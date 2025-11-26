@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Campus Map & Directory</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* --- THEME VARIABLES --- */
+        :root {
+            --bg-gradient-1: #89f7fe;
+            --bg-gradient-2: #66a6ff;
+            --bg-gradient-3: #fbc2eb;
+            --bg-gradient-4: #a6c1ee;
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.85);
+            --input-bg: rgba(255, 255, 255, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --accent-glow: rgba(102, 166, 255, 0.5);
+            --accent-color: #66a6ff; 
+            --error-color: #f87171;
+        }
+
+        [data-theme="light"] {
+            --bg-gradient-1: #e0c3fc;
+            --bg-gradient-2: #8ec5fc;
+            --bg-gradient-3: #e2ebf0;
+            --bg-gradient-4: #cfd9df;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.9);
+            --text-primary: #2d3748;
+            --text-secondary: rgba(45, 55, 72, 0.7);
+            --input-bg: rgba(255, 255, 255, 0.7);
+            --shadow-color: rgba(0, 0, 0, 0.05);
+            --accent-glow: rgba(142, 197, 252, 0.6);
+            --accent-color: #8ec5fc;
+        }
+
+        /* --- GLOBAL & ANIMATION --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(-45deg, var(--bg-gradient-1), var(--bg-gradient-2), var(--bg-gradient-3), var(--bg-gradient-4));
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px var(--shadow-color);
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- LAYOUT & COMPONENTS --- */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; margin-bottom: 2rem; }
+        .college-title { font-size: 1.8rem; font-weight: 700; text-decoration: none; color: var(--text-primary); text-shadow: 0 2px 10px var(--shadow-color); }
+        .theme-toggle { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.2rem; background: var(--glass-bg); border: 1px solid var(--glass-border); }
+        .page-header { text-align: center; margin-bottom: 3rem; }
+        .page-header h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 0.5rem; text-shadow: 0 4px 30px rgba(0,0,0,0.1); }
+        .map-section { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+        
+        @media (max-width: 900px) {
+            .map-section { grid-template-columns: 1fr; }
+        }
+        
+        /* Map Placeholder */
+        .interactive-map-area { height: 600px; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 18px; display: flex; align-items: center; justify-content: center; position: relative; flex-direction: column; gap: 1rem; text-align: center; }
+        .map-placeholder-text { color: var(--text-secondary); font-size: 1.1rem; }
+        .map-link-button { padding: 0.8rem 2rem; border: none; border-radius: 50px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s; background: var(--accent-color); color: var(--text-primary); text-decoration: none; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
+        .map-link-button:hover { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px var(--accent-glow); transform: translateY(-2px); }
+
+        /* Directory */
+        .building-directory { display: flex; flex-direction: column; gap: 1.5rem; }
+        .building-search-input { padding: 0 1.5rem; height: 50px; font-size: 1rem; border-radius: 12px; width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border); color: var(--text-primary); backdrop-filter: blur(10px); transition: all 0.3s; }
+        .building-search-input:focus { outline: none; box-shadow: 0 0 0 4px var(--accent-glow); }
+        .building-list { max-height: 500px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem; }
+        .building-card { padding: 1.2rem; border-radius: 14px; background: var(--input-bg); border: 1px solid transparent; cursor: pointer; transition: all 0.3s; display: flex; justify-content: space-between; align-items: center; }
+        .building-card:hover { transform: translateY(-2px); box-shadow: 0 4px 10px var(--shadow-color); border-color: var(--glass-border); }
+        .building-info .name { font-weight: 600; font-size: 1.1rem; margin-bottom: 0.2rem; }
+        .building-info .type { font-size: 0.85rem; color: var(--text-secondary); }
+        .building-icon { font-size: 1.5rem; color: var(--accent-color); }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="navbar fade-in">
+            <a href="/" class="college-title">🏛️ College Name</a>
+            <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+                <span id="themeIcon">🌙</span>
+            </div>
+        </div>
+
+        <div class="page-header fade-in">
+            <h1>Interactive Campus Map</h1>
+            <p style="color: var(--text-secondary); font-size: 1.2rem;">Find your way around campus easily.</p>
+        </div>
+
+        <div class="map-section">
+            <div class="interactive-map-area glass fade-in">
+                <i class="fa-solid fa-map-location-dot" style="font-size: 5rem; color: var(--text-secondary);"></i>
+                <p class="map-placeholder-text">The map displays building locations. Search **"kiit campus 25"** to get **directions from your current location**.</p>
+                
+                <a href="https://www.google.com/maps/search/KIIT+Campus+25" target="_blank" class="map-link-button">View Campus on Map (External)</a>
+            </div>
+
+            <div class="building-directory fade-in">
+                <input type="text" id="buildingSearchInput" class="building-search-input glass" placeholder="Search for a building, hall, or department... (Try 'kiit campus 25')" oninput="searchBuildings()">
+                
+                <div id="buildingList" class="building-list glass">
+                    <div class="building-card" style="justify-content: center; color: var(--text-secondary);">
+                        <i class="fa-solid fa-magnifying-glass" style="margin-right: 0.5rem;"></i>
+                        Start typing to filter buildings.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Setup and Theme Logic ---
+        let currentTheme = localStorage.getItem('theme') || 'dark';
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.setAttribute('data-theme', currentTheme);
+            document.getElementById('themeIcon').textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+            renderBuildings(buildingDatabase); 
+        });
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', currentTheme);
+            document.getElementById('themeIcon').textContent = currentTheme === 'dark' ? '🌙' : '☀️';
+            localStorage.setItem('theme', currentTheme);
+        }
+
+        /* --- Building Data --- */
+        const buildingDatabase = [
+            { id: 1, name: "Academic Block 1 (AB-1)", type: "Engineering & CSE Depts", icon: "fa-solid fa-microchip" },
+            { id: 2, name: "Central Library (CL)", type: "Books, Research & Labs", icon: "fa-solid fa-book" },
+            { id: 3, name: "Student Activity Center (SAC)", type: "Sports & Club Offices", icon: "fa-solid fa-people-group" },
+            { id: 7, name: "Administrative Block (Admin)", type: "Registrar, Accounts & HR", icon: "fa-solid fa-building-columns" },
+            { id: 8, name: "Men's Hostel Block A", type: "Residential", icon: "fa-solid fa-bed" },
+            { id: 9, name: "Women's Hostel Block W", type: "Residential", icon: "fa-solid fa-bed" },
+            { id: 10, name: "Sports Complex", type: "Gym & Stadium", icon: "fa-solid fa-dumbbell" },
+        ];
+
+        /* --- Search Logic (Modified for Redirection) --- */
+        function searchBuildings() {
+            const query = document.getElementById('buildingSearchInput').value.toLowerCase().trim();
+            
+            // 1. CHECK FOR REDIRECTION QUERY (Exact match)
+            if (query === 'kiit campus 25') {
+                // *** UPDATED URL FOR DIRECTIONS FROM CURRENT LOCATION ***
+                // The URL structure is: /maps/dir/Origin/Destination
+                // 'Current+Location' tells Google Maps to use the user's GPS/IP location as the starting point.
+                const campus25Url = 'https://www.google.com/maps/dir/Current+Location/KIIT+Campus+25+Bhubaneswar'; 
+                
+                // Redirects the entire page to the provided Google Maps Directions link.
+                window.location.href = campus25Url; 
+                return; // Stop processing the building list
+            }
+
+            // 2. NORMAL SEARCH LOGIC
+            if (query.length < 2) {
+                renderBuildings(buildingDatabase);
+                return;
+            }
+
+            const results = buildingDatabase.filter(b => {
+                return b.name.toLowerCase().includes(query) || b.type.toLowerCase().includes(query);
+            });
+
+            renderBuildings(results);
+        }
+        
+        /* --- Rendering and Highlighting Functions --- */
+        function createBuildingCard(building) {
+            return `
+                <div class="building-card" onclick="highlightBuilding(${building.id})" data-building-id="${building.id}">
+                    <div class="building-info">
+                        <div class="name">${building.name}</div>
+                        <div class="type">${building.type}</div>
+                    </div>
+                    <i class="${building.icon} building-icon"></i>
+                </div>
+            `;
+        }
+
+        function renderBuildings(buildings) {
+            const listContainer = document.getElementById('buildingList');
+            if (buildings.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="building-card" style="justify-content: center; color: var(--error-color);">
+                        <i class="fa-solid fa-triangle-exclamation" style="margin-right: 0.5rem;"></i>
+                        No buildings found matching your search.
+                    </div>
+                `;
+            } else {
+                listContainer.innerHTML = buildings.map(createBuildingCard).join('');
+            }
+        }
+
+        function highlightBuilding(id) {
+            // This function would typically interact with an embedded map API
+            document.querySelectorAll('.building-card').forEach(card => {
+                card.style.borderColor = 'transparent';
+                card.style.background = 'var(--input-bg)';
+            });
+
+            const selected = document.querySelector(`.building-card[data-building-id="${id}"]`);
+            if (selected) {
+                selected.style.borderColor = 'var(--accent-color)';
+                selected.style.background = 'rgba(102, 166, 255, 0.15)'; 
+            }
+        }
+    </script>
+</body>
+</html>
