@@ -92,11 +92,50 @@
             .map-section { grid-template-columns: 1fr; }
         }
         
-        /* Map Placeholder */
-        .interactive-map-area { height: 600px; background: var(--input-bg); border: 1px solid var(--glass-border); border-radius: 18px; display: flex; align-items: center; justify-content: center; position: relative; flex-direction: column; gap: 1rem; text-align: center; }
-        .map-placeholder-text { color: var(--text-secondary); font-size: 1.1rem; }
-        .map-link-button { padding: 0.8rem 2rem; border: none; border-radius: 50px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.3s; background: var(--accent-color); color: var(--text-primary); text-decoration: none; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); }
-        .map-link-button:hover { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px var(--accent-glow); transform: translateY(-2px); }
+        /* Interactive Map Area (with Dummy Image CSS) */
+        .interactive-map-area { 
+            height: 600px; 
+            background: var(--input-bg); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 18px; 
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 1.5rem;
+        }
+        
+        .dummy-map-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 18px;
+            z-index: 0;
+        }
+
+        .map-link-button { 
+            padding: 0.8rem 2rem; 
+            border: none; 
+            border-radius: 50px; 
+            font-weight: 600; 
+            font-size: 1rem; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            background: var(--accent-color); 
+            color: var(--text-primary); 
+            text-decoration: none; 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); 
+            z-index: 1;
+        }
+        .map-link-button:hover { 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px var(--accent-glow); 
+            transform: translateY(-2px); 
+        }
 
         /* Directory */
         .building-directory { display: flex; flex-direction: column; gap: 1.5rem; }
@@ -114,7 +153,7 @@
 
     <div class="container">
         <div class="navbar fade-in">
-            <a href="/" class="college-title">🏛️ College Name</a>
+            <a href="/" class="college-title">🏛️ KIIT University</a>
             <div class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
                 <span id="themeIcon">🌙</span>
             </div>
@@ -127,19 +166,19 @@
 
         <div class="map-section">
             <div class="interactive-map-area glass fade-in">
-                <i class="fa-solid fa-map-location-dot" style="font-size: 5rem; color: var(--text-secondary);"></i>
-                <p class="map-placeholder-text">The map displays building locations. Search **"kiit campus 25"** to get **directions from your current location**.</p>
                 
-                <a href="https://www.google.com/maps/search/KIIT+Campus+25" target="_blank" class="map-link-button">View Campus on Map (External)</a>
+                <img src="https://i.ibb.co/W4mQJnsy/KIIT-University-Bhubaneswar.jpg" alt="Dummy Campus Map" class="dummy-map-image">
+                
+                <a href="https://kiit.ac.in/tour/" target="_blank" class="map-link-button">View Virtual Campus Tour</a>
             </div>
 
             <div class="building-directory fade-in">
-                <input type="text" id="buildingSearchInput" class="building-search-input glass" placeholder="Search for a building, hall, or department... (Try 'kiit campus 25')" oninput="searchBuildings()">
+                <input type="text" id="buildingSearchInput" class="building-search-input glass" placeholder="Search for a building, hall, or department..." oninput="searchBuildings()">
                 
                 <div id="buildingList" class="building-list glass">
                     <div class="building-card" style="justify-content: center; color: var(--text-secondary);">
                         <i class="fa-solid fa-magnifying-glass" style="margin-right: 0.5rem;"></i>
-                        Start typing to filter buildings.
+                        Start typing or click a building to view on map.
                     </div>
                 </div>
             </div>
@@ -164,32 +203,97 @@
 
         /* --- Building Data --- */
         const buildingDatabase = [
-            { id: 1, name: "Academic Block 1 (AB-1)", type: "Engineering & CSE Depts", icon: "fa-solid fa-microchip" },
-            { id: 2, name: "Central Library (CL)", type: "Books, Research & Labs", icon: "fa-solid fa-book" },
+            { id: 1, name: "Main Campus", type: "ICT Cell& Audi", icon: "fa-solid fa-microchip" },
+            { id: 2, name: "Central Library (CL)", type: "Books, Research & Labs", icon: "fa-solid fa-book", mapUrl: "https://maps.app.goo.gl/xxmSnXVgc5pdF33x6" },
             { id: 3, name: "Student Activity Center (SAC)", type: "Sports & Club Offices", icon: "fa-solid fa-people-group" },
             { id: 7, name: "Administrative Block (Admin)", type: "Registrar, Accounts & HR", icon: "fa-solid fa-building-columns" },
             { id: 8, name: "Men's Hostel Block A", type: "Residential", icon: "fa-solid fa-bed" },
             { id: 9, name: "Women's Hostel Block W", type: "Residential", icon: "fa-solid fa-bed" },
             { id: 10, name: "Sports Complex", type: "Gym & Stadium", icon: "fa-solid fa-dumbbell" },
+
+
+
+
+            { id: 11, name: "KP1", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 12, name: "KP2", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 13, name: "KP3", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 14, name: "KP4", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 15, name: "KP5", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 16, name: "KP6", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 17, name: "KP7", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 18, name: "KP8", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 19, name: "KP9", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 20, name: "KP10", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 21, name: "KP11", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 22, name: "KP12", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 23, name: "KP13", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 24, name: "KP14", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 25, name: "KP15", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 26, name: "KP16", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 27, name: "KP17", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 28, name: "KP18", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 29, name: "KP19", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 30, name: "KP20", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 31, name: "KP21", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 32, name: "KP22", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 33, name: "KP23", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 34, name: "KP24", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 35, name: "KP25A", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 36, name: "KP25B", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 37, name: "KP25C", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 38, name: "KP25D", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 38, name: "KP25E", type: "Boy's Hostel", icon: "fa-solid  fa-bed" },
+
+
+            { id: 39, name: "QC1", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 40, name: "QC2", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 41, name: "QC3", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 42, name: "QC4", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 43, name: "QC5", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 44, name: "QC6", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 45, name: "QC7", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 46, name: "QC8", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 47, name: "QC9", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 48, name: "QC10", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 49, name: "QC11", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 50, name: "QC12", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 51, name: "QC13", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 52, name: "QC14", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 53, name: "QC15", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 54, name: "QC16", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 55, name: "QC17", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 56, name: "QC18", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 57, name: "QC19G", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+            { id: 58, name: "QC19F", type: "Girl's Hostel", icon: "fa-solid  fa-bed" },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ];
 
-        /* --- Search Logic (Modified for Redirection) --- */
+        /* --- Search Logic (CLEANED) --- */
         function searchBuildings() {
             const query = document.getElementById('buildingSearchInput').value.toLowerCase().trim();
             
-            // 1. CHECK FOR REDIRECTION QUERY (Exact match)
-            if (query === '25') {
-                // *** UPDATED URL FOR DIRECTIONS FROM CURRENT LOCATION ***
-                // The URL structure is: /maps/dir/Origin/Destination
-                // 'Current+Location' tells Google Maps to use the user's GPS/IP location as the starting point.
-                const campus25Url = 'https://www.google.com/maps/dir/Current+Location/KIIT+Campus+25+Bhubaneswar'; 
-                
-                // Redirects the entire page to the provided Google Maps Directions link.
-                window.location.href = campus25Url; 
-                return; // Stop processing the building list
-            }
+            // The redirection logic for 'kiit campus 25' has been removed.
+            // The function now only performs the normal search and filter.
 
-            // 2. NORMAL SEARCH LOGIC
             if (query.length < 2) {
                 renderBuildings(buildingDatabase);
                 return;
@@ -202,10 +306,32 @@
             renderBuildings(results);
         }
         
-        /* --- Rendering and Highlighting Functions --- */
+        /* --- Click Handler for Building Cards --- */
+        function handleBuildingClick(id) {
+            const selectedBuilding = buildingDatabase.find(b => b.id === id);
+
+            // 1. Visual Highlight
+            document.querySelectorAll('.building-card').forEach(card => {
+                card.style.borderColor = 'transparent';
+                card.style.background = 'var(--input-bg)';
+            });
+
+            const selectedElement = document.querySelector(`.building-card[data-building-id="${id}"]`);
+            if (selectedElement) {
+                selectedElement.style.borderColor = 'var(--accent-color)';
+                selectedElement.style.background = 'rgba(102, 166, 255, 0.15)'; 
+            }
+
+            // 2. Open Map Link if available (e.g., Central Library)
+            if (selectedBuilding && selectedBuilding.mapUrl) {
+                window.open(selectedBuilding.mapUrl, '_blank');
+            } 
+        }
+
+        /* --- Rendering Functions --- */
         function createBuildingCard(building) {
             return `
-                <div class="building-card" onclick="highlightBuilding(${building.id})" data-building-id="${building.id}">
+                <div class="building-card" onclick="handleBuildingClick(${building.id})" data-building-id="${building.id}">
                     <div class="building-info">
                         <div class="name">${building.name}</div>
                         <div class="type">${building.type}</div>
@@ -226,20 +352,6 @@
                 `;
             } else {
                 listContainer.innerHTML = buildings.map(createBuildingCard).join('');
-            }
-        }
-
-        function highlightBuilding(id) {
-            // This function would typically interact with an embedded map API
-            document.querySelectorAll('.building-card').forEach(card => {
-                card.style.borderColor = 'transparent';
-                card.style.background = 'var(--input-bg)';
-            });
-
-            const selected = document.querySelector(`.building-card[data-building-id="${id}"]`);
-            if (selected) {
-                selected.style.borderColor = 'var(--accent-color)';
-                selected.style.background = 'rgba(102, 166, 255, 0.15)'; 
             }
         }
     </script>
